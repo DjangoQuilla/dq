@@ -9,7 +9,7 @@ django.project('dq')
 from django.conf import settings
 
 running_instances = []
-s = boto3.session.Session(profile_name='xtest')
+s = boto3.session.Session(profile_name='dq')
 ec2 = s.resource("ec2")
 
 def get_ec2_instances():
@@ -17,7 +17,7 @@ def get_ec2_instances():
         Filters=[{'Name': 'instance-state-name', 'Values': ['running']}]
     )
     for i in instances:
-        ssh_access = "ubuntu@{0}".format(i.public_dns_name)
+        ssh_access = "ubuntu@{0}".format(i.public_ip_address)
         print 'servers >', ssh_access
         running_instances.append(ssh_access)
 
@@ -70,7 +70,7 @@ def django(command):
 def production():
     environments['default'] = environments['production']
     env.hosts = environments['production']['hosts']
-    env.key_filename = 'cmhost-oregon-tests2.pem'
+    env.key_filename = 'djangoquilla.pem'
 
 #tasks
 def test_connection():
